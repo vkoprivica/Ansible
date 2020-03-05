@@ -1,0 +1,61 @@
+---
+{#File: ubuntu_patching_template.yaml#}
+{#Author: Vukasin Koprivica#}
+{#Description: Playbook contains the following tasks:#}
+{#1. Email notification to distribution list before Ubuntu patching begins.#}
+{#2. Pause of 5 minutes for currently logged in users to log out. #}
+{#3. Update APT Package Manager Repositories Cache.#}
+{#4. Upgrade Installed Packages.#}
+{#5. Reboot Server. #}
+{#6. Pause of 5 minutes for server to boot. #}
+{#7. Check disk space of boot partition. #}
+{#8. Email notification to distribution list about free boot disk space. #}
+###
+- hosts: host_group
+  tasks:
+    - name: Email Report
+      mail:
+        host: smtp.domain.com
+        port: 25
+        from: <ansible_server@domain.com>
+        to: <email@domain.com>
+        subject: Linux Patching Report
+        body: "Patching of the following Linux servers
+will start in 5 munutes: {{ ansible_hostname}}.\nPlease LOG OUT immediately if you are using any of servers!"
+
+    - pause: seconds=300
+
+    - name: Update APT Package Manager Repositories Cache
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: Upgrade Installed Packages
+      become: true
+      apt:
+        upgrade: dist
+
+    - name: Reboot Server
+      become: yes
+      become_method: sudo
+      command: /sbin/shutdown -r +1
+
+    - pause: seconds=300
+
+    - name: Check Disk Space
+      shell: df -l
+      register: result
+    - debug: var=result.stdout_lines[7]
+
+
+    - name: Email Report
+      mail:
+        host: smtp.domain.com
+        port: 25
+        from: <ansible_server@domain.com>
+        to: <email@domain.com>
+        subject: Linux Patching Report
+        body: " Linux patching was completed.\n
+Server {{ ansible_hostname}} was rebooted.\n
+Current {{ansible_hostname}} boot partition report:   {{result.stdout_lines[7]}}"
+
