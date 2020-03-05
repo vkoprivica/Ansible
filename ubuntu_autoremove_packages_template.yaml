@@ -1,14 +1,14 @@
 ---
 {#File: ubuntu_autoremove_packages_template.yaml#}
 {#Author: Vukasin Koprivica#}
-{#1. Email notification to distribution list before removal unnacessary of packages begins. #}
+{#1. Email notification to distribution list before removal of unnacessary packages begins. #}
 {#It is required to free space from boot partition in order for successful installation#}
 {#of future packages. #}
 {#2. Pause of 5 minutes for current users of the servers to log out.#}
-{#3. Remove Unnecessary Linux Boot Packages.#}
-{#4. Reboot Server.#}
+{#3. Remove unnecessary linux boot packages.#}
+{#4. Reboot server.#}
 {#5. Pause of 5 minutes for server to boot. #}
-{#6. Check Disk Space.#}
+{#6. Check disk space.#}
 {#7. Email notification to distribution list about free boot disk space.#}
 ###
 - hosts: host_group
@@ -53,5 +53,5 @@ will start in 5 munutes: {{ ansible_hostname}}.\nPlease LOG OUT immediately if y
         to: <email@domain.com>
         subject: Linux Boot Partition Report
         body: " Boot partition cleanup was completed.\n
-Server {{ ansible_hostname}} was rebooted.\n
+Server {{ansible_hostname}} was rebooted.\n
 Current {{ansible_hostname}} boot partition report:   {{result.stdout_lines[7]}}"

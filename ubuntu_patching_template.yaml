@@ -4,9 +4,9 @@
 {#Description: Playbook contains the following tasks:#}
 {#1. Email notification to distribution list before Ubuntu patching begins.#}
 {#2. Pause of 5 minutes for currently logged in users to log out. #}
-{#3. Update APT Package Manager Repositories Cache.#}
-{#4. Upgrade Installed Packages.#}
-{#5. Reboot Server. #}
+{#3. Update APT package manager repositories cache.#}
+{#4. Upgrade installed packages.#}
+{#5. Reboot server. #}
 {#6. Pause of 5 minutes for server to boot. #}
 {#7. Check disk space of boot partition. #}
 {#8. Email notification to distribution list about free boot disk space. #}
@@ -56,6 +56,6 @@ will start in 5 munutes: {{ ansible_hostname}}.\nPlease LOG OUT immediately if y
         to: <email@domain.com>
         subject: Linux Patching Report
         body: " Linux patching was completed.\n
-Server {{ ansible_hostname}} was rebooted.\n
+Server {{ansible_hostname}} was rebooted.\n
 Current {{ansible_hostname}} boot partition report:   {{result.stdout_lines[7]}}"
 
